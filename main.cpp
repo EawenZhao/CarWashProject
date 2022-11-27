@@ -5,11 +5,14 @@
 #include <cmath>
 using namespace std;
 
+
+
 int main()
 {
     WashCmp cmp;
     cmp.simulation();
     cmp.printCmpStatistic();
+
 
     //srand((unsigned int)time(0));
     //cout << RAND_MAX << endl; //32767
