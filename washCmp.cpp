@@ -9,7 +9,7 @@ WashCmp::WashCmp()
 	numServedCars = 0;
 }
 
-void WashCmp::simulation()
+void WashCmp::simulation() //here is the deter of in or out
 {
 	int arrivalTime = getNextArrival(); //get the next arrival time from keyboard input
 
@@ -17,7 +17,7 @@ void WashCmp::simulation()
 	{
 		if (carQueue.empty()) //queue empty, process arrival
 		{
-			processArrivalEmptyQ(arrivalTime);
+            processArrivalEmptyQ(arrivalTime);
 			arrivalTime = getNextArrival(); //get next arrival
 		}
 		else if (arrivalTime < carQueue.front().getDepartureTime()) //arrival first, process arrival
@@ -35,7 +35,7 @@ void WashCmp::simulation()
 	processRemain();
 }
 
-int WashCmp::getNextArrival()
+int WashCmp::getNextArrival()  //here is the method for pure input
 {
 	int tempT;
 	std::cout << "Please input the next arrival time (input 999 to terminate):\n";
@@ -44,6 +44,7 @@ int WashCmp::getNextArrival()
 }
 
 void WashCmp::processArrivalEmptyQ(int arrivalTime)
+// no other function, just "process arrival". divided into two categories, emptyQ or NonEmptyQ
 {
 	Car arrivedCar = Car(arrivalTime);
 	arrivedCar.setDepartAndWaitTime(arrivalTime); //set the departure and waiting time of the arrived car
