@@ -17,5 +17,6 @@ int main() {
     cmp.simulation();
     cmp.printCmpStatistic();
     cout << "The standard waiting time is : " << ArrivalRate / (ServiceRate * (ServiceRate - ArrivalRate));
+
     return 0;
 }
