@@ -4,22 +4,24 @@
 class Car
 {
 private:
-	int arrivalTime;
-	int departureTime;
-	int waitingTime;
-	const static int SERVICE_T;
+	double arrivalTime{};
+	double departureTime{};
+	double waitingTime{};
+    double serviceTime{};
 
 public:
 	Car();
-	Car(int arrivalT);
+	Car(double arrivalT,double ServiceT);
 
-	int getArrivalTime();
-	int getDepartureTime();
-	int getWaitingTime();
+	double getArrivalTime() const;
+	double getDepartureTime() const;
+	double getWaitingTime() const;
+    double getServiceTime() const;
 
-	void setDepartAndWaitTime(int currTime);
-	void printCarDeparture();
-	void printCarArrival();
+	void setDepartAndWaitTime(double currTime);
+	void printCarDeparture() const;
+	void printCarArrival() const;
+
 };
 
 

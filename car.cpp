@@ -1,51 +1,42 @@
 #include "car.h"
 #include <iostream>
 
-const int Car::SERVICE_T = 10;
+Car::Car() {};
 
-Car::Car()
-{
-	arrivalTime = 0;
-	departureTime = 0;
-	waitingTime = 0;
+Car::Car(double arrivalT, double serviceT) {
+    arrivalTime = arrivalT;
+    serviceTime = serviceT;
 }
 
-Car::Car(int arrivalT)
-{
-	arrivalTime = arrivalT;
+double Car::getArrivalTime() const {
+    return arrivalTime;
 }
 
-int Car::getArrivalTime()
-{
-	return arrivalTime;
+double Car::getDepartureTime() const {
+    return this->departureTime;
 }
 
-int Car::getDepartureTime()
-{
-	return departureTime;
+double Car::getWaitingTime() const {
+    return this->waitingTime;
 }
 
-int Car::getWaitingTime()
-{
-	return waitingTime;
+double Car::getServiceTime() const {
+    return this->serviceTime;
 }
 
-void Car::setDepartAndWaitTime(int startServiceTime)
-{
-	departureTime = startServiceTime + SERVICE_T;
-	waitingTime = startServiceTime - arrivalTime;
+void Car::setDepartAndWaitTime(double startServiceTime) {
+    departureTime = startServiceTime + serviceTime;
+    waitingTime = startServiceTime - arrivalTime;
 }
 
-void Car::printCarDeparture()
-{
-	std::cout << "A car is washed and departs!\n";
-	std::cout << "\tArrival time: " << arrivalTime << std::endl;
-	std::cout << "\tDeparture time: " << departureTime << std::endl;
-	std::cout << "\tWaiting time: " << waitingTime << std::endl;
+void Car::printCarDeparture() const {
+    std::cout << "A car is washed and departs!\n";
+    std::cout << "\tArrival time: " << arrivalTime << std::endl;
+    std::cout << "\tDeparture time: " << departureTime << std::endl;
+    std::cout << "\tWaiting time: " << waitingTime << std::endl;
 }
 
-void Car::printCarArrival()
-{
-	std::cout << "A car arrives!\n";
-	std::cout << "\tArrival time: " << arrivalTime << std::endl;
+void Car::printCarArrival() const {
+    std::cout << "A car arrives!\n";
+    std::cout << "\tArrival time: " << arrivalTime << std::endl;
 }

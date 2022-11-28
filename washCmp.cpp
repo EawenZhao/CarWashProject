@@ -1,92 +1,97 @@
 #include "washCmp.h"
 #include <iostream>
+#include <ctime>
+#include <cmath>
 
-const int WashCmp::CAPACITY = 5 + 1;
+const double eps = 0.01;
 
-WashCmp::WashCmp()
-{
-	totalWaitingTime = 0;
-	numServedCars = 0;
+WashCmp::WashCmp() {};
+
+WashCmp::WashCmp(int amountofCars, double arrivalRate, double serviceRate) {
+    srand((unsigned) time(0));
+    this->amountofCars = amountofCars;
+    this->arrivalRate = arrivalRate;
+    this->serviceRate = serviceRate;
 }
 
 void WashCmp::simulation() //here is the deter of in or out
 {
-	int arrivalTime = getNextArrival(); //get the next arrival time from keyboard input
+    double arrivalTime = getNextArrival(); //get the next arrival time from keyboard input
 
-	while(arrivalTime != 999)
-	{
-		if (carQueue.empty()) //queue empty, process arrival
-		{
-            processArrivalEmptyQ(arrivalTime);
-			arrivalTime = getNextArrival(); //get next arrival
-		}
-		else if (arrivalTime < carQueue.front().getDepartureTime()) //arrival first, process arrival
-		{
-			processArrivalNonEmptyQ(arrivalTime);
-			arrivalTime = getNextArrival(); //get next arrival
-		}
-		else //departure first or of the same time, process departure
-		{
-			processDeparture(); //no need to get next arrival
-		}
-	}
+    /************* to be changed ****************/
+    while (arrivalTime != 999) {
+        if (carQueue.empty()) //queue empty, process arrival
+        {
+            processArrivalEmptyQ(arrivalTime, getNextServiceTime());
+            arrivalTime = getNextArrival(); //get next arrival
+        } else if (arrivalTime < carQueue.front().getDepartureTime()) //arrival first, process arrival
+        {
+            processArrivalNonEmptyQ(arrivalTime, getNextServiceTime());
+            arrivalTime = getNextArrival(); //get next arrival
+        } else //departure first or of the same time, process departure
+        {
+            processDeparture(); //no need to get next arrival
+        }
+    }
 
-	//no more arrival, process the remaining cars in the queue
-	processRemain();
+    //no more arrival, process the remaining cars in the queue
+    processRemain();
 }
 
-int WashCmp::getNextArrival()  //here is the method for pure input
+double WashCmp::getNextArrival()  //get next arrival time
 {
-	int tempT;
-	std::cout << "Please input the next arrival time (input 999 to terminate):\n";
-	std::cin >> tempT;
-	return tempT;
+    numServedCars++;
+    if (this->numServedCars != this->amountofCars) {
+        double p = rand() / double(RAND_MAX + 1); //generate a number between 0 and 1
+        double gap = - (1 / this->arrivalRate) * log(1 - p) ;
+        lastArrivalTime = lastArrivalTime + gap;
+        return lastArrivalTime;
+    } else {
+        return 999;
+    }
 }
 
-void WashCmp::processArrivalEmptyQ(int arrivalTime)
-// no other function, just "process arrival". divided into two categories, emptyQ or NonEmptyQ
-{
-	Car arrivedCar = Car(arrivalTime);
-	arrivedCar.setDepartAndWaitTime(arrivalTime); //set the departure and waiting time of the arrived car
-	arrivedCar.printCarArrival(); //print the arrival information of the arrived car
-	carQueue.push(arrivedCar); //set the arrival time of the arrived car
+double WashCmp::getNextServiceTime() {
+    double s = rand() / double(RAND_MAX + 1);   //generate a number between 0 and 1
+    double result = - (1 / this->serviceRate) * log(1 - s);
+    return result;
 }
 
-void WashCmp::processArrivalNonEmptyQ(int arrivalTime)
-{
-	if (carQueue.size() < CAPACITY) //add the arrived car to the waiting queue
-	{
-		Car arrivedCar = Car(arrivalTime);
-		arrivedCar.printCarArrival(); //print the arrival information of the arrived car
-		carQueue.push(arrivedCar); //set the arrival time of the arrived car
-	}
-	else //the arrived car leaves
-		std::cout << "OVERFLOW!!!\n";
+void WashCmp::processArrivalEmptyQ(double arrivalTime, double serviceTime) {
+    Car arrivedCar = Car(arrivalTime, serviceTime);
+    arrivedCar.setDepartAndWaitTime(arrivalTime); //set the departure and waiting time of the arrived car
+    arrivedCar.printCarArrival(); //print the arrival information of the arrived car
+    carQueue.push(arrivedCar); //set the arrival time of the arrived car
 }
 
-void WashCmp::processDeparture()
-{
-	int currTime = carQueue.front().getDepartureTime(); //get the current time
+void WashCmp::processArrivalNonEmptyQ(double arrivalTime, double serviceTime) {
+    Car arrivedCar = Car(arrivalTime, serviceTime);
+    arrivedCar.printCarArrival(); //print the arrival information of the arrived car
+    carQueue.push(arrivedCar); //set the arrival time of the arrived car
+}
 
-	totalWaitingTime += carQueue.front().getWaitingTime(); //update statistics
-	numServedCars++; //update statistics
+void WashCmp::processDeparture() {
+    double currTime = carQueue.front().getDepartureTime(); //get the current time
 
-	carQueue.front().printCarDeparture(); //print departure information 
-	carQueue.pop(); //departs
+    totalWaitingTime += carQueue.front().getWaitingTime(); //update statistics
 
-	if (!carQueue.empty())                                 //set the departure and waiting time of
-		carQueue.front().setDepartAndWaitTime(currTime);   //the current front car in the queue
+    carQueue.front().printCarDeparture(); //print departure information
+    carQueue.pop(); //departs
+
+    if (!carQueue.empty())                                 //set the departure and waiting time of
+        carQueue.front().setDepartAndWaitTime(currTime);   //the current front car in the queue
 }
 
 void WashCmp::processRemain() //wash the remaining cars in the queue
 {
-	while (!carQueue.empty())
-		processDeparture();
+    while (!carQueue.empty())
+        processDeparture();
 }
 
-void WashCmp::printCmpStatistic()
-{
-	std::cout << "Number of served cars: " << numServedCars << std::endl;
-	std::cout << "Total waiting time: " << totalWaitingTime << std::endl;
-	std::cout << "The average waiting time is: " << (double)totalWaitingTime / numServedCars << std::endl;
+void WashCmp::printCmpStatistic() {
+    std::cout << "Number of served cars: " << numServedCars << std::endl;
+    std::cout << "Total waiting time: " << totalWaitingTime << std::endl;
+    std::cout << "The average waiting time is: " << (double) totalWaitingTime / numServedCars << std::endl;
 }
+
+
