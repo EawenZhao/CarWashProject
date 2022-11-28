@@ -3,7 +3,6 @@
 #include <ctime>
 #include <cmath>
 
-const double eps = 0.01;
 
 WashCmp::WashCmp() {};
 
