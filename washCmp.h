@@ -9,6 +9,7 @@ class WashCmp
 private:
 	std::queue<Car> carQueue;
 
+    int queuelength{};
     int amountofCars{};
 	int numServedCars{};
     double lastArrivalTime{};

@@ -61,12 +61,18 @@ void WashCmp::processArrivalEmptyQ(double arrivalTime, double serviceTime) {
     arrivedCar.setDepartAndWaitTime(arrivalTime); //set the departure and waiting time of the arrived car
     arrivedCar.printCarArrival(); //print the arrival information of the arrived car
     carQueue.push(arrivedCar); //set the arrival time of the arrived car
+    if (carQueue.size() > queuelength){
+        queuelength = (int)carQueue.size();
+    }
 }
 
 void WashCmp::processArrivalNonEmptyQ(double arrivalTime, double serviceTime) {
     Car arrivedCar = Car(arrivalTime, serviceTime);
     arrivedCar.printCarArrival(); //print the arrival information of the arrived car
     carQueue.push(arrivedCar); //set the arrival time of the arrived car
+    if (carQueue.size() > queuelength){
+        queuelength = (int)carQueue.size();
+    }
 }
 
 void WashCmp::processDeparture() {
@@ -91,6 +97,7 @@ void WashCmp::printCmpStatistic() {
     std::cout << "Number of served cars: " << numServedCars << std::endl;
     std::cout << "Total waiting time: " << totalWaitingTime << std::endl;
     std::cout << "The average waiting time is: " << (double) totalWaitingTime / numServedCars << std::endl;
+    std::cout << "max queue size :" << queuelength << std::endl;
 }
 
 
